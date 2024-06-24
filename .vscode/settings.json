@@ -12,6 +12,9 @@
         "unordered_set": "cpp",
         "vector": "cpp",
         "initializer_list": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "*.in": "cpp",
+        "*.tcc": "cpp",
+        "system_error": "cpp"
     }
 }

@@ -22,7 +22,7 @@
 #define RECOGNIZE_FACE
 #define MAX_NUM_FACE_REC 10
 // #define TEST_LIVING 
-// #define AUTO_FILL_DATABASE 
+#define AUTO_FILL_DATABASE 
 #define BLUR_FILTER_STRANGER
 // some diagnostics
 #define SHOW_LEGEND
@@ -40,7 +40,7 @@ const double MaxAngle        = 10.0;
 // Some globals
 //----------------------------------------------------------------------------------------
 const int   RetinaWidth      = 320;
-const int   RetinaHeight     = 240;
+const int   RetinaHeight     = 320;
 float ScaleX, ScaleY;
 vector<std::string> NameFaces;
 //----------------------------------------------------------------------------------------
@@ -273,7 +273,7 @@ int main(int argc, char **argv)
             cerr << "End of movie" << endl;
             break;
         }
-        frame = cv::imread("/home/hungdv/tcgroup/Jetson/Face-Recognition-Jetson-Nano/getty_517194189_373099.jpg");
+        frame = cv::imread("/home/hungdv/tcgroup/Jetson/Face-Recognition-Jetson-Nano/img/Duy#2.jpg");
 
         ScaleX = ((float) frame.cols) / RetinaWidth;
         ScaleY = ((float) frame.rows) / RetinaHeight;
@@ -320,7 +320,10 @@ int main(int argc, char **argv)
                     //the similarity score
                     if(FaceCnt>0){
                         vector<double> score_;
-                        for(size_t c=0;c<FaceCnt;c++) score_.push_back(CosineDistance(fc1[c], fc2));
+                        for(size_t c=0;c<FaceCnt;c++) {
+                            score_.push_back(CosineDistance(fc1[c], fc2));
+                            cout << CosineDistance(fc1[c], fc2) << endl;
+                        }
                         int Pmax = max_element(score_.begin(),score_.end()) - score_.begin();
                         Faces[i].NameIndex = Pmax;
                         Faces[i].NameProb  = score_[Pmax];
