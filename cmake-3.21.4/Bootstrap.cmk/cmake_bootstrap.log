@@ -1,0 +1,141 @@
+Checking for GNU toolchain
+Try: gcc
+Line: gcc  cmake_bootstrap_119895_test.c -o cmake_bootstrap_119895_test
+----------  file   -----------------------
+int main() { return 0; }
+------------------------------------------
+Test succeeded
+Try: g++
+Line: g++  cmake_bootstrap_119895_test.cpp -o cmake_bootstrap_119895_test
+----------  file   -----------------------
+int main() { return 0; }
+------------------------------------------
+Test succeeded
+Checking whether 'gcc    ' works.
+Try: gcc
+Line: gcc     cmake_bootstrap_119895_test.c -o cmake_bootstrap_119895_test
+----------  file   -----------------------
+
+#ifdef __cplusplus
+# error "The CMAKE_C_COMPILER is set to a C++ compiler"
+#endif
+
+#if defined(_AIX) && defined(__GNUC__) && !defined(_THREAD_SAFE)
+#error "On AIX with GNU we need the -pthread flag."
+#endif
+
+#if defined(__sun) && __STDC_VERSION__ < 199901L
+#error "On Solaris we need C99."
+#endif
+
+#if defined(__hpux) && !(defined(__GNUC__) && ((__GNUC__ * 100) + __GNUC_MINOR__) >= 409)
+#error "On HP-UX we need GCC 4.9 or higher."
+#endif
+
+#include <stdio.h>
+
+int main(int argc, char* argv[])
+{
+  printf("%d%c", (argv != 0), (char)0x0a);
+  return argc - 1;
+}
+
+------------------------------------------
+1
+Test succeeded
+Checking whether 'g++    ' works.
+Try: g++
+Line: g++     cmake_bootstrap_119895_test.cxx -o cmake_bootstrap_119895_test
+----------  file   -----------------------
+
+#include <iostream>
+#include <memory>
+#include <unordered_map>
+
+#if __cplusplus < 201103L
+#error "Compiler is not in a mode aware of C++11."
+#endif
+
+#if defined(_AIX) && defined(__GNUC__) && !defined(_THREAD_SAFE)
+#error "On AIX with GNU we need the -pthread flag."
+#endif
+
+#if defined(__SUNPRO_CC) && __SUNPRO_CC < 0x5140
+#error "SunPro <= 5.13 mode not supported due to bug in move semantics."
+#endif
+
+#if defined(__hpux) && !(defined(__GNUC__) && ((__GNUC__ * 100) + __GNUC_MINOR__) >= 409)
+#error "On HP-UX we need GCC 4.9 or higher."
+#endif
+
+#if __cplusplus > 201103L
+#include <iterator>
+int check_cxx14()
+{
+  int a[] = { 0, 1, 2 };
+  auto ai = std::cbegin(a);
+
+  int b[] = { 2, 1, 0 };
+  auto bi = std::cend(b);
+
+  return *ai + *(bi - 1);
+}
+#else
+int check_cxx14()
+{
+  return 0;
+}
+#endif
+
+#if (__cplusplus >= 201703L || defined(__INTEL_COMPILER) && defined(__cpp_deduction_guides))
+#include <optional>
+template <typename T,
+          typename std::invoke_result<decltype(&T::get), T>::type = nullptr>
+typename T::pointer get_ptr(T& item)
+{
+  return item.get();
+}
+
+int check_cxx17()
+{
+  // Intel compiler do not handle correctly decltype inside invoke_result
+  std::unique_ptr<int> u(new int(0));
+  get_ptr(u);
+  std::optional<int> oi = 0;
+  return oi.value();
+}
+#else
+int check_cxx17()
+{
+  return 0;
+}
+#endif
+
+class Class
+{
+public:
+  int Get() const { return this->Member; }
+private:
+  int Member = 1;
+};
+int main()
+{
+  auto const c = std::unique_ptr<Class>(new Class);
+  std::cout << c->Get() << check_cxx14() << check_cxx17() << std::endl;
+  return 0;
+}
+
+------------------------------------------
+100
+Test succeeded
+Checking whether 'g++     ' supports 'make_unique'.
+Try: g++
+Line: g++      /home/hungdv/tcgroup/Jetson/Face-Recognition-Jetson-Nano/cmake-3.21.4/Source/Checks/cm_cxx_make_unique.cxx -o cmake_bootstrap_119895_test
+----------  file   -----------------------
+#include <memory>
+int main()
+{
+  std::unique_ptr<int> u = std::make_unique<int>(0);
+  return *u;
+}
+------------------------------------------
